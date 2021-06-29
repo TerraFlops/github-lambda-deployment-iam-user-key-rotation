@@ -21,7 +21,6 @@ module "github_iam_user_rotate" {
   lambda_cloudwatch_encryption_enabled = true
   lambda_subnet_ids = null
   lambda_security_group_ids = null
-  ignore_changes = true
   lambda_environment_variables = {
     iam_username = aws_iam_user.github_deployment.name
     github_organization = var.github_organization
