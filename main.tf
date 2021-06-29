@@ -64,18 +64,13 @@ data "aws_iam_policy_document" "github_deployment" {
   version = "2012-10-17"
   statement {
     effect = "Allow"
-    actions = ["ecr:*"]
-    resources = flatten([
-      for ecr_repository in var.ecr_repositories: [
-        "arn:aws:ecr:${data.aws_region.default.name}:${data.aws_caller_identity.default.account_id}:repository/${ecr_repository}",
-        "arn:aws:ecr:${data.aws_region.default.name}:${data.aws_caller_identity.default.account_id}:repository/${ecr_repository}/*" ]
-    ])
+    actions = ["lambda:*"]
+    resources = var.lambda_function_arns
   }
   statement {
     effect = "Allow"
     actions = [
       "logs:GetLogEvents",
-      "ecr:GetAuthorizationToken"
     ]
     resources = ["*"]
   }

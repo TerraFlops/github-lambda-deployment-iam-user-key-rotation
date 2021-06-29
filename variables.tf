@@ -14,6 +14,6 @@ variable "github_environment" {
   type = string
 }
 
-variable "lambda_function_arn" {
+variable "lambda_function_arns" {
   type = set(string)
 }
