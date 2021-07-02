@@ -1,7 +1,7 @@
 locals {
   github_repository = replace(var.github_repository, "_", "-")
   github_repository_snake = join("", [ for element in split("-", local.github_repository): title(lower(element)) ])
-  iam_username = "${local.github_repository_snake}GithubDeployment"
+  iam_username = "${local.github_repository_snake}GithubIamUserKeyRotate"
 }
 
 # Grab the current account ID and region
@@ -10,7 +10,7 @@ data "aws_region" "default" {}
 
 module "github_iam_user_rotate" {
   source = "git::https://github.com/TerraFlops/aws-lambda-python.git?ref=v3.19"
-  lambda_name = "github-iam-user-key-rotate-${local.github_repository}"
+  lambda_name = "${local.github_repository}-github-iam-user-key-rotate"
   lambda_description = "Lambda function to rotate GitHub IAM user access key/secret"
   lambda_filename = "${path.module}/lambda.zip"
   lambda_handler = "handler.handler"
