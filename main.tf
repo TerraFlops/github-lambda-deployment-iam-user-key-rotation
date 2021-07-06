@@ -1,7 +1,7 @@
 locals {
   github_repository = replace(var.github_repository, "_", "-")
-  github_repository_snake = join("", [ for element in split("-", local.github_repository): title(lower(element)) ])
-  iam_username = "GitHubDeployment${local.github_repository_snake}"
+  github_repository_camel = join("", [ for element in split("-", local.github_repository): title(lower(element)) ])
+  iam_username = "GitHubDeployment${local.github_repository_camel}"
 }
 
 # Grab the current account ID and region
