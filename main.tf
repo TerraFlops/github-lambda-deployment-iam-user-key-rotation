@@ -4,13 +4,12 @@ locals {
   iam_username = "GitHubDeployment${local.github_repository_camel}"
 }
 
-# Grab the current account ID and region
 data "aws_caller_identity" "default" {}
 data "aws_region" "default" {}
 
 module "github_iam_user_rotate" {
   source = "git::https://github.com/TerraFlops/aws-lambda-python.git?ref=v3.19"
-  lambda_name = "${local.github_repository}-github-iam-user-key-rotate"
+  lambda_name = "{local.github_repository}-github-iam-user-key-rotate"
   lambda_description = "Lambda function to rotate GitHub IAM user access key/secret"
   lambda_filename = "${path.module}/lambda.zip"
   lambda_handler = "handler.handler"
@@ -39,8 +38,8 @@ resource "aws_iam_group" "github_deployment" {
 }
 
 resource "aws_iam_policy" "github_deployment" {
-  name = local.iam_username
-  description = "GitHub Actions deployment policy"
+  name = "GitHubActionsLambdaDeployment"
+  description = "GitHub Actions Lambda function deployment policy"
   policy = data.aws_iam_policy_document.github_deployment.json
 }
 
