@@ -31,6 +31,7 @@ module "github_iam_user_rotate" {
 
 resource "aws_iam_user" "github_deployment" {
   name = local.iam_username
+  force_destroy = true
 }
 
 resource "aws_iam_group" "github_deployment" {
