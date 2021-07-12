@@ -1,16 +1,15 @@
 locals {
   github_repository = replace(var.github_repository, "_", "-")
-  github_repository_snake = join("", [ for element in split("-", local.github_repository): title(lower(element)) ])
-  iam_username = "${local.github_repository_snake}GithubIamUserKeyRotate"
+  github_repository_camel = join("", [ for element in split("-", local.github_repository): title(lower(element)) ])
+  iam_username = "GitHubDeployment${local.github_repository_camel}"
 }
 
-# Grab the current account ID and region
 data "aws_caller_identity" "default" {}
 data "aws_region" "default" {}
 
 module "github_iam_user_rotate" {
   source = "git::https://github.com/TerraFlops/aws-lambda-python.git?ref=v3.19"
-  lambda_name = "${local.github_repository}-github-iam-user-key-rotate"
+  lambda_name = "{local.github_repository}-github-iam-user-key-rotate"
   lambda_description = "Lambda function to rotate GitHub IAM user access key/secret"
   lambda_filename = "${path.module}/lambda.zip"
   lambda_handler = "handler.handler"
@@ -32,6 +31,7 @@ module "github_iam_user_rotate" {
 
 resource "aws_iam_user" "github_deployment" {
   name = local.iam_username
+  force_destroy = true
 }
 
 resource "aws_iam_group" "github_deployment" {
@@ -39,8 +39,8 @@ resource "aws_iam_group" "github_deployment" {
 }
 
 resource "aws_iam_policy" "github_deployment" {
-  name = local.iam_username
-  description = "GitHub Actions deployment policy"
+  name = "GitHubActionsLambdaDeployment"
+  description = "GitHub Actions Lambda function deployment policy"
   policy = data.aws_iam_policy_document.github_deployment.json
 }
 
